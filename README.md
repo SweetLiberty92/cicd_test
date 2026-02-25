@@ -1,7 +1,6 @@
 # 📰 News MCP Server
 
 A **FastMCP** (Model Context Protocol) server that connects to PostgreSQL and exposes newsworthy events as AI-queryable tools and resources. Includes a full **GitHub Actions CI/CD** pipeline that lints, tests, and deploys to a **Debian 12** host via Docker.
-
 ---
 
 ## Architecture
