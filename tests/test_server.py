@@ -5,7 +5,7 @@ All database calls are mocked — no real PostgreSQL instance is needed.
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -18,13 +18,13 @@ SAMPLE_ROWS: list[dict[str, Any]] = [
         "id": 1,
         "title": "Breaking: AI passes bar exam",
         "body": "An AI model achieved a perfect score on the bar exam today.",
-        "published_at": datetime(2026, 2, 24, 12, 0, 0, tzinfo=timezone.utc),
+        "published_at": datetime(2026, 2, 24, 12, 0, 0, tzinfo=UTC),
     },
     {
         "id": 2,
         "title": "New solar farm opens in Texas",
         "body": "A 500MW solar farm began producing power in west Texas.",
-        "published_at": datetime(2026, 2, 23, 9, 30, 0, tzinfo=timezone.utc),
+        "published_at": datetime(2026, 2, 23, 9, 30, 0, tzinfo=UTC),
     },
 ]
 
