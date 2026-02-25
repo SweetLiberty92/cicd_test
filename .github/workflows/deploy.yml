@@ -1,0 +1,66 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# CD — Build & Deploy to Debian 12
+# Runs on push to main AFTER CI passes.
+# ─────────────────────────────────────────────────────────────────────────────
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+    branches: [main]
+
+jobs:
+  deploy:
+    name: Build & Deploy
+    runs-on: ubuntu-latest
+    # Only deploy when CI succeeded AND this was a push (not a PR)
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t news-mcp:latest .
+
+      - name: Save Docker image to tarball
+        run: docker save news-mcp:latest | gzip > news-mcp.tar.gz
+
+      - name: Copy image to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          source: "news-mcp.tar.gz"
+          target: "/tmp"
+
+      - name: Deploy on server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            # Load the new image
+            docker load < /tmp/news-mcp.tar.gz
+
+            # Stop existing container (ignore error if not running)
+            docker stop news-mcp 2>/dev/null || true
+            docker rm   news-mcp 2>/dev/null || true
+
+            # Start the new container
+            docker run -d \
+              --name news-mcp \
+              --restart unless-stopped \
+              -e DATABASE_URL="${{ secrets.DATABASE_URL }}" \
+              -p 8000:8000 \
+              news-mcp:latest
+
+            # Clean up tarball
+            rm -f /tmp/news-mcp.tar.gz
+
+            echo "✅ Deployed news-mcp successfully"
