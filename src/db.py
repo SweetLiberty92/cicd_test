@@ -4,15 +4,15 @@ from __future__ import annotations
 
 from typing import Any
 
-import asyncpg
+import asyncpg  # type: ignore[import-untyped]
 
 from src.config import settings
 
 # Module-level pool cache.
-_pool: asyncpg.Pool | None = None  # type: ignore[type-arg]
+_pool: asyncpg.Pool | None = None
 
 
-async def get_pool() -> asyncpg.Pool:  # type: ignore[type-arg]
+async def get_pool() -> asyncpg.Pool:
     """Return (and lazily create) the asyncpg connection pool."""
     global _pool
     if _pool is None:
