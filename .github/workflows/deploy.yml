@@ -1,6 +1,6 @@
 # ─────────────────────────────────────────────────────────────────────────────
 # CD — Build & Deploy to Debian 12
-# Runs on push to main AFTER CI passes.
+# Runs on push to master AFTER CI passes.
 # ─────────────────────────────────────────────────────────────────────────────
 name: Deploy
 

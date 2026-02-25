@@ -9,7 +9,7 @@ A **FastMCP** (Model Context Protocol) server that connects to PostgreSQL and ex
 flowchart LR
     subgraph GitHub
         PR[Push / PR] --> CI[CI: Lint + Test]
-        CI -->|success on main| CD[CD: Build & Deploy]
+        CI -->|success on master| CD[CD: Build & Deploy]
     end
     CD -->|SCP + SSH| Server[Debian 12 Host]
     Server --> Docker[Docker Container]
@@ -118,14 +118,14 @@ Run `sql/001_create_news.sql` on your PostgreSQL instance to create the table an
 
 ### CI (`.github/workflows/ci.yml`)
 
-Triggers on **push** and **pull request** to `main`:
+Triggers on **push** and **pull request** to `master`:
 
 1. **Lint** — `ruff check`, `ruff format --check`, `mypy`
 2. **Test** — `pytest` (runs only after lint passes)
 
 ### CD (`.github/workflows/deploy.yml`)
 
-Triggers **after CI succeeds** on a push to `main`:
+Triggers **after CI succeeds** on a push to `master`:
 
 1. Builds the Docker image
 2. SCPs the image tarball to the Debian 12 host

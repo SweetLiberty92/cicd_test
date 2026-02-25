@@ -40,10 +40,7 @@ async def fetch_news(limit: int = 10) -> list[dict[str, Any]]:
     """
     pool = await get_pool()
     rows = await pool.fetch(
-        "SELECT id, title, body, published_at "
-        "FROM news "
-        "ORDER BY published_at DESC "
-        "LIMIT $1",
+        "SELECT id, title, body, published_at FROM news ORDER BY published_at DESC LIMIT $1",
         limit,
     )
     return [dict(r) for r in rows]

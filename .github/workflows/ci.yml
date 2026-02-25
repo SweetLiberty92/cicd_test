@@ -1,6 +1,6 @@
 # ─────────────────────────────────────────────────────────────────────────────
 # CI — Multi-phase: Lint → Security → Type Check → Test
-# Runs on every push / PR to main.
+# Runs on every push / PR to master.
 # ─────────────────────────────────────────────────────────────────────────────
 name: CI
 
